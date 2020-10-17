@@ -1,0 +1,127 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<math.h>
+
+float print_average(float b[],int z){
+    float sum=0;
+    for(int i=0;i<z;i++){
+        sum+=b[i];
+    }
+    return sum;
+}
+
+float s_d(float a[],int z,float sum){
+    float m=sum/z;
+    float deviation=0;
+    for(int i=0;i<z;i++){
+        deviation+=pow(a[i]-m,2);
+    }
+    return sqrt(deviation/z);
+}
+
+int sorted(int a[],int n){
+    while(--n>=1){
+        if(a[n]<a[n-1])
+            return 0;
+    }
+    return 1;
+}
+
+void sorting(int a[],int n){
+    for(int i=0;i<n;i++){
+        int t=a[i];
+        int temp=rand()%n;
+        a[i]=a[temp];
+        a[temp]=t;
+    }
+}
+
+void bogosort(int a[],int n){
+    while(!sorted(a,n)){
+        sorting(a,n);
+    }
+}
+
+void BOGOSORT(int n)
+{
+    float average,start,end,Time;
+    int a[n],z=100;
+    srand(time(0));
+    float b[z];
+    for(int j=0;j<z;j++){
+    start=clock();
+    for(int i=0;i<n;i++)
+        a[i]=rand()%101;
+    bogosort(a,n);
+    end=clock();
+    Time=end-start;
+    b[j]=Time;
+    }
+    average=print_average(b,z);
+    printf("\n Average time taken: %f",average/z);
+    printf("\n Standard deviation: %f",s_d(b,z,average));
+}
+
+int partition(int a[],int l,int r){
+    int p1=a[r];
+    int p2=l-1;
+    for(int i=l;i<=r-1;i++){
+        if(a[i]<=p1){
+            p2++;
+            int temp=a[p2];
+            a[p2]=a[i];
+            a[i]=temp;
+        }
+    }
+    int temp1=a[p2+1];
+    a[p2+1]=a[r];
+    a[r]=temp1;
+    return(p2+1);
+}
+
+int q_sort(int a[],int l,int r){
+    int temp=rand()%(r-l)+l;
+    return partition(a,l,r);
+}
+
+void r_quicksort(int a[],int l,int r){
+    if(l<r){
+        int pi=q_sort(a,l,r);
+        r_quicksort(a,l,pi-1);
+        r_quicksort(a,pi+1,r);
+    }
+}
+
+void QUICKSORT(int n)
+{
+    float average,start,end,Time;
+    int a[n],z=100;
+    srand(time(0));
+    float b[z];
+    for(int j=0;j<z;j++){
+    start=clock();
+    for(int i=0;i<n;i++)
+        a[i]=rand()%101;
+    r_quicksort(a,0,n-1);
+    end=clock();
+    Time=end-start;
+    b[j]=Time;
+    }
+    average=print_average(b,z);
+    printf("\n Average time taken: %f",average/z);
+    printf("\n Standard deviation: %f",s_d(b,z,average));
+}
+
+int main(){
+    int n;
+    printf("Enter size array: ");
+    scanf("%d",&n);
+    printf("BOGOSORT : ");
+    BOGOSORT(n);
+    printf("\nQUICKSORT : ");
+    QUICKSORT(n);
+    return 0;
+}
+
+//For the array of size 6 : For Bogosort the average time taken is 78.779999 and Standard deviation is 80.787575 : For Quicksort the average time taken is 0.400000 and the standard deviation is 0.489898.
